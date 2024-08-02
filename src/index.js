@@ -14,15 +14,15 @@ async function handleRequest(request) {
 
     switch (base) {
         case 'bloodbank':
-            return handleBloodbankRequest(id);
+            return handleBloodbankRequest(id, url.searchParams);
         case 'donor':
-            return handleDonorRequest(id);
+            return handleDonorRequest(id, url.searchParams);
         default:
             return new Response('Not Found', { status: 404 });
     }
 }
 
-async function handleBloodbankRequest(id) {
+async function handleBloodbankRequest(id, searchParams) {
     const response = await fetch('https://prajapatihet.github.io/hospitalinfo-api/bloodbank.json', {
         method: 'GET',
         headers: {
@@ -30,7 +30,8 @@ async function handleBloodbankRequest(id) {
         }
     });
 
-    const data = await response.json();
+    let data = await response.json();
+
     if (id) {
         const item = data.find(bloodbank => bloodbank.id === id);
         if (!item) {
@@ -40,12 +41,15 @@ async function handleBloodbankRequest(id) {
             headers: { 'Content-Type': 'application/json' }
         });
     }
+
+    data = filterData(data, searchParams);
+
     return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' }
     });
 }
 
-async function handleDonorRequest(id) {
+async function handleDonorRequest(id, searchParams) {
     const response = await fetch('https://prajapatihet.github.io/hospitalinfo-api/donorinfo.json', {
         method: 'GET',
         headers: {
@@ -53,7 +57,8 @@ async function handleDonorRequest(id) {
         }
     });
 
-    const data = await response.json();
+    let data = await response.json();
+
     if (id) {
         const item = data.find(donor => donor.id === id);
         if (!item) {
@@ -63,7 +68,31 @@ async function handleDonorRequest(id) {
             headers: { 'Content-Type': 'application/json' }
         });
     }
+
+    data = filterData(data, searchParams);
+
     return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' }
     });
+}
+
+function filterData(data, searchParams) {
+    let filteredData = data;
+    const name = searchParams.get('name');
+    const loc = searchParams.get('loc');
+    const add = searchParams.get('add');
+
+    if (name) {
+        filteredData = filteredData.filter(item => item.name.toLowerCase().includes(name.toLowerCase()));
+    }
+
+    if (loc) {
+        filteredData = filteredData.filter(item => item.loc.toLowerCase().includes(loc.toLowerCase()));
+    }
+
+    if (add) {
+        filteredData = filteredData.filter(item => item.add.toLowerCase().includes(add.toLowerCase()));
+    }
+
+    return filteredData;
 }
