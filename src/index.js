@@ -4,18 +4,25 @@ addEventListener('fetch', event => {
 
 async function handleRequest(request) {
     const url = new URL(request.url);
+    const segments = url.pathname.split('/').filter(segment => segment);
 
-    switch (url.pathname) {
-        case '/bloodbank':
-            return handleBloodbankRequest();
-        case '/donor':
-            return handleDonorRequest();
+    if (segments.length === 0) {
+        return new Response('Not Found', { status: 404 });
+    }
+
+    const [base, id] = segments;
+
+    switch (base) {
+        case 'bloodbank':
+            return handleBloodbankRequest(id);
+        case 'donor':
+            return handleDonorRequest(id);
         default:
             return new Response('Not Found', { status: 404 });
     }
 }
 
-async function handleBloodbankRequest() {
+async function handleBloodbankRequest(id) {
     const response = await fetch('https://prajapatihet.github.io/hospitalinfo-api/bloodbank.json', {
         method: 'GET',
         headers: {
@@ -24,12 +31,21 @@ async function handleBloodbankRequest() {
     });
 
     const data = await response.json();
+    if (id) {
+        const item = data.find(bloodbank => bloodbank.id === id);
+        if (!item) {
+            return new Response('Not Found', { status: 404 });
+        }
+        return new Response(JSON.stringify(item), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
     return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' }
     });
 }
 
-async function handleDonorRequest() {
+async function handleDonorRequest(id) {
     const response = await fetch('https://prajapatihet.github.io/hospitalinfo-api/donorinfo.json', {
         method: 'GET',
         headers: {
@@ -38,6 +54,15 @@ async function handleDonorRequest() {
     });
 
     const data = await response.json();
+    if (id) {
+        const item = data.find(donor => donor.id === id);
+        if (!item) {
+            return new Response('Not Found', { status: 404 });
+        }
+        return new Response(JSON.stringify(item), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
     return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' }
     });
