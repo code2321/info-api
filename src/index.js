@@ -1,6 +1,6 @@
 addEventListener('fetch', event => {
     event.respondWith(handleRequest(event.request));
-})
+});
 
 async function handleRequest(request) {
     const url = new URL(request.url);
@@ -83,15 +83,15 @@ function filterData(data, searchParams) {
     const add = searchParams.get('add');
 
     if (name) {
-        filteredData = filteredData.filter(item => item.name.toLowerCase().includes(name.toLowerCase()));
+        filteredData = filteredData.filter(item => item.name.toLowerCase().includes(decodeURIComponent(name).toLowerCase()));
     }
 
     if (loc) {
-        filteredData = filteredData.filter(item => item.loc.toLowerCase().includes(loc.toLowerCase()));
+        filteredData = filteredData.filter(item => item.loc.toLowerCase().includes(decodeURIComponent(loc).toLowerCase()));
     }
 
     if (add) {
-        filteredData = filteredData.filter(item => item.add.toLowerCase().includes(add.toLowerCase()));
+        filteredData = filteredData.filter(item => item.add.toLowerCase().includes(decodeURIComponent(add).toLowerCase()));
     }
 
     return filteredData;
