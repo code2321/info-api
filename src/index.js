@@ -77,7 +77,7 @@ async function handleDonorRequest(id, searchParams) {
 }
 
 function normalizeString(str) {
-    return str.replace(/\s+/g, '').toLowerCase(); // Remove all spaces and convert to lowercase
+    return str.replace(/[^a-zA-Z]/g, '').toLowerCase(); // Remove all non-alphabetic characters and convert to lowercase
 }
 
 function filterData(data, searchParams) {
