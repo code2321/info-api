@@ -83,15 +83,15 @@ function filterData(data, searchParams) {
     const add = searchParams.get('add');
 
     if (name) {
-        filteredData = filteredData.filter(item => item.name.toLowerCase().includes(decodeURIComponent(name).toLowerCase()));
+        filteredData = filteredData.filter(item => item.name.toLowerCase().includes(name.toLowerCase()));
     }
 
     if (loc) {
-        filteredData = filteredData.filter(item => item.loc.toLowerCase().includes(decodeURIComponent(loc).toLowerCase()));
+        filteredData = filteredData.filter(item => item.loc.toLowerCase().includes(loc.toLowerCase()));
     }
 
     if (add) {
-        filteredData = filteredData.filter(item => item.add.toLowerCase().includes(decodeURIComponent(add).toLowerCase()));
+        filteredData = filteredData.filter(item => item.add.toLowerCase().includes(add.toLowerCase()));
     }
 
     return filteredData;
