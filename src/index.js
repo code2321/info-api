@@ -8,7 +8,7 @@ async function handleRequest(request) {
     switch (url.pathname) {
         case '/bloodbank':
             return handleBloodbankRequest();
-        case '/hospital':
+        case '/donor':
             return handleDonorRequest();
         default:
             return new Response('Not Found', { status: 404 });
