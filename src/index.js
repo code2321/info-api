@@ -76,6 +76,10 @@ async function handleDonorRequest(id, searchParams) {
     });
 }
 
+function normalizeString(str) {
+    return str.replace(/\s+/g, '').toLowerCase(); // Remove all spaces and convert to lowercase
+}
+
 function filterData(data, searchParams) {
     let filteredData = data;
     const name = searchParams.get('name');
@@ -83,15 +87,24 @@ function filterData(data, searchParams) {
     const add = searchParams.get('add');
 
     if (name) {
-        filteredData = filteredData.filter(item => item.name.toLowerCase().includes(name.toLowerCase()));
+        const normalizedName = normalizeString(name);
+        filteredData = filteredData.filter(item => 
+            normalizeString(item.name).includes(normalizedName)
+        );
     }
 
     if (loc) {
-        filteredData = filteredData.filter(item => item.loc.toLowerCase().includes(loc.toLowerCase()));
+        const normalizedLoc = normalizeString(loc);
+        filteredData = filteredData.filter(item => 
+            normalizeString(item.loc).includes(normalizedLoc)
+        );
     }
 
     if (add) {
-        filteredData = filteredData.filter(item => item.add.toLowerCase().includes(add.toLowerCase()));
+        const normalizedAdd = normalizeString(add);
+        filteredData = filteredData.filter(item => 
+            normalizeString(item.add).includes(normalizedAdd)
+        );
     }
 
     return filteredData;
