@@ -1,6 +1,7 @@
 # wrangler.toml
 name = "info-api"
 main = "src/index.js"
+compatibility_date = "2024-08-02"
 account_id = "e4d1d936c76c7e0b374894cca544d28a"
 type = "javascript"
 workers_dev = true
