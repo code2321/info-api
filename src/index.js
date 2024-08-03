@@ -82,6 +82,11 @@ async function handleDonorRequest(id, searchParams) {
         });
     }
 
+    if (searchParams.toString()) {
+        // If there are search parameters, filter for available donors only
+        data = data.filter(donor => donor.available);
+    }
+
     data = filterDonorData(data, searchParams);
 
     return new Response(JSON.stringify(data), {
@@ -124,7 +129,7 @@ function filterBloodbankData(data, searchParams) {
 }
 
 function filterDonorData(data, searchParams) {
-    let filteredData = data.filter(donor => donor.available); // Initially filter only available donors
+    let filteredData = data;
     const id = searchParams.get('id');
     const location = searchParams.get('location');
     const bloodgroup = searchParams.get('bloodgroup');
