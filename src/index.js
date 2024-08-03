@@ -55,7 +55,7 @@ async function handleBloodbankRequest(id, searchParams) {
         });
     }
 
-    data = filterData(data, searchParams);
+    data = filterBloodbankData(data, searchParams);
 
     return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' }
@@ -82,7 +82,7 @@ async function handleDonorRequest(id, searchParams) {
         });
     }
 
-    data = filterData(data, searchParams);
+    data = filterDonorData(data, searchParams);
 
     return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' }
@@ -93,7 +93,7 @@ function normalizeString(str) {
     return str.replace(/[^a-zA-Z]/g, '').toLowerCase(); // Remove all non-alphabetic characters and convert to lowercase
 }
 
-function filterData(data, searchParams) {
+function filterBloodbankData(data, searchParams) {
     let filteredData = data;
     const name = searchParams.get('name');
     const loc = searchParams.get('loc');
@@ -117,6 +117,33 @@ function filterData(data, searchParams) {
         const normalizedAdd = normalizeString(add);
         filteredData = filteredData.filter(item => 
             normalizeString(item.add).includes(normalizedAdd)
+        );
+    }
+
+    return filteredData;
+}
+
+function filterDonorData(data, searchParams) {
+    let filteredData = data.filter(donor => donor.available); // Initially filter only available donors
+    const id = searchParams.get('id');
+    const location = searchParams.get('location');
+    const bloodgroup = searchParams.get('bloodgroup');
+
+    if (id) {
+        filteredData = filteredData.filter(donor => donor.id === id);
+    }
+
+    if (location) {
+        const normalizedLocation = normalizeString(location);
+        filteredData = filteredData.filter(donor => 
+            normalizeString(donor.location).includes(normalizedLocation)
+        );
+    }
+
+    if (bloodgroup) {
+        const normalizedBloodgroup = normalizeString(bloodgroup);
+        filteredData = filteredData.filter(donor => 
+            normalizeString(donor.bloodgroup).includes(normalizedBloodgroup)
         );
     }
 
