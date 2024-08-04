@@ -34,7 +34,6 @@ async function handleRootRequest() {
 }
 
 async function fetchHtml() {
-    // Fetch the HTML content from your static hosting (e.g., GitHub Pages)
     const response = await fetch('https://prajapatihet.github.io/hospitalinfo-api/index.html');
     return response.text();
 }
@@ -87,7 +86,6 @@ async function handleDonorRequest(id, searchParams) {
     }
 
     if (searchParams.toString()) {
-        // If there are search parameters, filter for available donors only
         data = data.filter(donor => donor.available);
     }
 
@@ -153,7 +151,7 @@ async function handleEventsRequest(id, searchParams) {
 }
 
 function normalizeString(str) {
-    return str.replace(/[^a-zA-Z]/g, '').toLowerCase(); // Remove all non-alphabetic characters and convert to lowercase
+    return str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 }
 
 function filterBloodbankData(data, searchParams) {
@@ -205,7 +203,7 @@ function filterDonorData(data, searchParams) {
 
     if (bloodgroup) {
         filteredData = filteredData.filter(donor => 
-            donor.bloodgroup.toLowerCase() === bloodgroup.toLowerCase()
+            donor.bloodgroup.replace(/\s+/g, '').toLowerCase() === bloodgroup.replace(/\s+/g, '').toLowerCase()
         );
     }
 
