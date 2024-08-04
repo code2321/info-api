@@ -204,9 +204,8 @@ function filterDonorData(data, searchParams) {
     }
 
     if (bloodgroup) {
-        const normalizedBloodgroup = normalizeString(bloodgroup);
         filteredData = filteredData.filter(donor => 
-            donor.bloodgroup.toLowerCase() == bloodgroup.toLowerCase()
+            donor.bloodgroup.toLowerCase() === bloodgroup.toLowerCase()
         );
     }
 
