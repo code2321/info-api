@@ -17,6 +17,10 @@ async function handleRequest(request) {
             return handleBloodbankRequest(id, url.searchParams);
         case 'donor':
             return handleDonorRequest(id, url.searchParams);
+        case 'camps':
+            return handleCampsRequest(id, url.searchParams);
+        case 'events':
+            return handleEventsRequest(id, url.searchParams);
         default:
             return new Response('Not Found', { status: 404 });
     }
@@ -94,6 +98,60 @@ async function handleDonorRequest(id, searchParams) {
     });
 }
 
+async function handleCampsRequest(id, searchParams) {
+    const response = await fetch('https://prajapatihet.github.io/hospitalinfo-api/camps.json', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    let data = await response.json();
+
+    if (id) {
+        const item = data.find(camp => camp.id === id);
+        if (!item) {
+            return new Response('Not Found', { status: 404 });
+        }
+        return new Response(JSON.stringify(item), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    data = filterCampsOrEventsData(data, searchParams);
+
+    return new Response(JSON.stringify(data), {
+        headers: { 'Content-Type': 'application/json' }
+    });
+}
+
+async function handleEventsRequest(id, searchParams) {
+    const response = await fetch('https://prajapatihet.github.io/hospitalinfo-api/events.json', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    let data = await response.json();
+
+    if (id) {
+        const item = data.find(event => event.id === id);
+        if (!item) {
+            return new Response('Not Found', { status: 404 });
+        }
+        return new Response(JSON.stringify(item), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    data = filterCampsOrEventsData(data, searchParams);
+
+    return new Response(JSON.stringify(data), {
+        headers: { 'Content-Type': 'application/json' }
+    });
+}
+
 function normalizeString(str) {
     return str.replace(/[^a-zA-Z]/g, '').toLowerCase(); // Remove all non-alphabetic characters and convert to lowercase
 }
@@ -149,6 +207,20 @@ function filterDonorData(data, searchParams) {
         const normalizedBloodgroup = normalizeString(bloodgroup);
         filteredData = filteredData.filter(donor => 
             normalizeString(donor.bloodgroup).includes(normalizedBloodgroup)
+        );
+    }
+
+    return filteredData;
+}
+
+function filterCampsOrEventsData(data, searchParams) {
+    let filteredData = data;
+    const location = searchParams.get('location');
+
+    if (location) {
+        const normalizedLocation = normalizeString(location);
+        filteredData = filteredData.filter(item => 
+            normalizeString(item.location).includes(normalizedLocation)
         );
     }
 
