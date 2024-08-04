@@ -202,14 +202,14 @@ function filterDonorData(data, searchParams) {
     }
 
     if (bloodgroup) {
+        const normalizedBloodgroup = normalizeString(bloodgroup);
         filteredData = filteredData.filter(donor => 
-            donor.bloodgroup.replace(/\s+/g, '').toLowerCase() === bloodgroup.replace(/\s+/g, '').toLowerCase()
+            normalizeString(donor.bloodgroup) === normalizedBloodgroup
         );
     }
 
     return filteredData;
 }
-
 function filterCampsOrEventsData(data, searchParams) {
     let filteredData = data;
     const location = searchParams.get('location');
