@@ -184,8 +184,9 @@ function filterBloodbankData(data, searchParams) {
     return filteredData;
 }
 function normalizeBloodGroup(str) {
-    return str.trim().toLowerCase();
+    return str.replace(/[^a-zA-Z\+\-]/g, '').toLowerCase();
 }
+
 function filterDonorData(data, searchParams) {
     let filteredData = data;
     const id = searchParams.get('id');
@@ -197,9 +198,9 @@ function filterDonorData(data, searchParams) {
     }
 
     if (location) {
-        const normalizedLocation = normalizeBloodGroup(location);
+        const normalizedLocation = normalizeString(location);
         filteredData = filteredData.filter(donor => 
-            normalizeBloodGroup(donor.location).includes(normalizedLocation)
+            normalizeString(donor.location).includes(normalizedLocation)
         );
     }
 
