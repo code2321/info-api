@@ -1,3 +1,4 @@
+
 addEventListener('fetch', event => {
     event.respondWith(handleRequest(event.request));
 });
@@ -183,9 +184,6 @@ function filterBloodbankData(data, searchParams) {
 
     return filteredData;
 }
-function normalizeBloodGroup(str) {
-    return str.replace(/[^a-zA-Z\+\-]/g, '').toLowerCase();
-}
 
 function filterDonorData(data, searchParams) {
     let filteredData = data;
@@ -205,9 +203,9 @@ function filterDonorData(data, searchParams) {
     }
 
     if (bloodgroup) {
-        const normalizedBloodgroup = normalizeBloodGroup(bloodgroup);
+        const normalizedBloodgroup = normalizeString(bloodgroup);
         filteredData = filteredData.filter(donor => 
-            normalizeBloodGroup(donor.bloodgroup) === normalizedBloodgroup
+            normalizeString(donor.bloodgroup) === normalizedBloodgroup
         );
     }
 
